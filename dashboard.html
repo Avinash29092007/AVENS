@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Dashboard</h1>
+
+<div class="cards">
+
+<div class="card">
+    <h3>Total Students</h3>
+    <p>250</p>
+</div>
+
+<div class="card">
+    <h3>Attendance</h3>
+    <p>92%</p>
+</div>
+
+<div class="card">
+    <h3>Study Streak</h3>
+    <p>15 Days</p>
+</div>
+
+<div class="card">
+    <h3>Consistency</h3>
+    <p>88%</p>
+</div>
+
+</div>
+
+<canvas id="attendanceChart"></canvas>
+
+<script>
+new Chart(document.getElementById('attendanceChart'), {
+type:'bar',
+data:{
+labels:['Mon','Tue','Wed','Thu','Fri'],
+datasets:[{
+label:'Attendance',
+data:[80,85,90,95,88]
+}]
+}
+});
+</script>
+
+{% endblock %}
