@@ -1,50 +1,209 @@
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 
-db = SQLAlchemy()
+app = Flask(__name__)
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100))
-    email = db.Column(db.String(120), unique=True)
-    password = db.Column(db.String(255))
-    role = db.Column(db.String(20))
+# =========================
+# Authentication
+# =========================
 
-class Student(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    reg_no = db.Column(db.String(50))
-    name = db.Column(db.String(100))
-    department = db.Column(db.String(100))
-    year = db.Column(db.Integer)
+@app.route("/")
+def login():
+    return render_template("login.html")
 
-class Attendance(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer)
-    date = db.Column(db.Date)
-    status = db.Column(db.String(20))
+@app.route("/signup")
+def signup():
+    return render_template("signup.html")
 
-class Assignment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200))
-    due_date = db.Column(db.Date)
-    file_path = db.Column(db.String(255))
+@app.route("/logout")
+def logout():
+    return redirect(url_for("login"))
 
-class Resource(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200))
-    file_path = db.Column(db.String(255))
+# =========================
+# Dashboard
+# =========================
 
-class Internship(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    company = db.Column(db.String(100))
-    role = db.Column(db.String(100))
-    deadline = db.Column(db.Date)
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
 
-class Notification(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    message = db.Column(db.Text)
-    created_at = db.Column(db.DateTime)
+# =========================
+# Student Management
+# =========================
 
-class Leaderboard(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer)
-    score = db.Column(db.Integer)
+@app.route("/students")
+def students():
+    return render_template("students.html")
+
+@app.route("/api/students", methods=["GET"])
+def get_students():
+    return jsonify([])
+
+@app.route("/api/students", methods=["POST"])
+def add_student():
+    return jsonify({"message": "Student Added"})
+
+@app.route("/api/students/<int:id>", methods=["PUT"])
+def update_student(id):
+    return jsonify({"message": "Student Updated"})
+
+@app.route("/api/students/<int:id>", methods=["DELETE"])
+def delete_student(id):
+    return jsonify({"message": "Student Deleted"})
+
+# =========================
+# Attendance
+# =========================
+
+@app.route("/attendance")
+def attendance():
+    return render_template("attendance.html")
+
+@app.route("/api/attendance", methods=["GET"])
+def get_attendance():
+    return jsonify([])
+
+@app.route("/api/attendance", methods=["POST"])
+def mark_attendance():
+    return jsonify({"message": "Attendance Marked"})
+
+# =========================
+# Consistency Hub
+# =========================
+
+@app.route("/consistency")
+def consistency():
+    return render_template("consistency.html")
+
+@app.route("/api/consistency")
+def consistency_data():
+    return jsonify({
+        "streak": 12,
+        "score": 87
+    })
+
+# =========================
+# Assignments
+# =========================
+
+@app.route("/assignments")
+def assignments():
+    return render_template("assignments.html")
+
+@app.route("/api/assignments", methods=["GET"])
+def get_assignments():
+    return jsonify([])
+
+@app.route("/api/assignments", methods=["POST"])
+def upload_assignment():
+    return jsonify({"message": "Assignment Uploaded"})
+
+# =========================
+# Notes & Resources
+# =========================
+
+@app.route("/resources")
+def resources():
+    return render_template("resources.html")
+
+@app.route("/api/resources", methods=["GET"])
+def get_resources():
+    return jsonify([])
+
+@app.route("/api/resources", methods=["POST"])
+def upload_resource():
+    return jsonify({"message": "Resource Uploaded"})
+
+# =========================
+# Analytics
+# =========================
+
+@app.route("/analytics")
+def analytics():
+    return render_template("analytics.html")
+
+@app.route("/api/analytics")
+def analytics_api():
+    return jsonify({
+        "attendance": 92,
+        "students": 250
+    })
+
+# =========================
+# Leaderboard
+# =========================
+
+@app.route("/leaderboard")
+def leaderboard():
+    return render_template("leaderboard.html")
+
+@app.route("/api/leaderboard")
+def leaderboard_api():
+    return jsonify([])
+
+# =========================
+# AI Assistant
+# =========================
+
+@app.route("/ai")
+def ai_page():
+    return render_template("ai_assistant.html")
+
+@app.route("/api/ai", methods=["POST"])
+def ai_chat():
+    data = request.json
+
+    return jsonify({
+        "response": f"You asked: {data['message']}"
+    })
+
+# =========================
+# Internship Portal
+# =========================
+
+@app.route("/internships")
+def internships():
+    return render_template("internship.html")
+
+@app.route("/api/internships")
+def internship_api():
+    return jsonify([])
+
+# =========================
+# Notifications
+# =========================
+
+@app.route("/api/notifications")
+def notifications():
+    return jsonify([])
+
+# =========================
+# Search
+# =========================
+
+@app.route("/api/search")
+def search():
+    query = request.args.get("q")
+    return jsonify({
+        "query": query
+    })
+
+# =========================
+# Settings
+# =========================
+
+@app.route("/settings")
+def settings():
+    return render_template("settings.html")
+
+@app.route("/api/settings", methods=["POST"])
+def save_settings():
+    return jsonify({
+        "message": "Settings Saved"
+    })
+
+# =========================
+# Run Flask
+# =========================
+
+if __name__ == "__main__":
+    app.run(debug=True)
